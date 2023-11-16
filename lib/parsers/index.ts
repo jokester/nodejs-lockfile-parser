@@ -33,6 +33,7 @@ export interface ManifestFile {
   optionalDependencies?: ManifestDependencies;
   peerDependencies?: ManifestDependencies;
   peerDependenciesMeta?: PeerDependenciesMeta;
+  // resolutions are yarn only? is there no support for npm `overrides`?
   resolutions?: ManifestDependencies;
   version?: string;
 }
@@ -40,10 +41,12 @@ export interface ManifestFile {
 // This is a copy/paste from https://github.com/snyk/dep-graph/blob/master/src/legacy/index.ts
 // and should be removed in favour of depgraph library interface
 
+// a node in dep tree
 export interface DepTreeDep {
   name?: string; // shouldn't, but might happen
   version?: string; // shouldn't, but might happen
   dependencies?: {
+    // XXX: could this contain cyclic loop?
     [depName: string]: DepTreeDep;
   };
   labels?: {
@@ -54,6 +57,7 @@ export interface DepTreeDep {
   };
 }
 
+// root node of dep tree
 export interface PkgTree extends DepTreeDep {
   type?: string;
   packageFormatVersion?: string;

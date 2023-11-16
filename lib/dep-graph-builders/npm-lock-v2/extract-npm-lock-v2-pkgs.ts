@@ -13,6 +13,11 @@ export type NpmLockPkg = {
   inBundle?: boolean;
 };
 
+/**
+ * XXX: how is this different from {@name P}
+ * @param pkgLockContent 
+ * @returns 
+ */
 export const extractPkgsFromNpmLockV2 = (
   pkgLockContent: string,
 ): Record<string, NpmLockPkg> => {

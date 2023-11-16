@@ -77,8 +77,6 @@ export abstract class LockParserBase implements LockfileParser {
           'provide `package-lock.json`.',
       );
     }
-    const yarnLock = lockfile as Lockfile;
-
     const depTree: PkgTree = {
       dependencies: {},
       hasDevDependencies: !_isEmpty(manifestFile.devDependencies),
@@ -105,7 +103,7 @@ export abstract class LockParserBase implements LockfileParser {
     // prepare a flat map, where dependency path is a key to dependency object
     // path is an unique identifier for each dependency and corresponds to the
     // relative path on disc
-    const depMap: DepMap = this.getDepMap(yarnLock, manifestFile.resolutions);
+    const depMap: DepMap = this.getDepMap(lockfile, manifestFile.resolutions);
 
     // all paths are identified, we can create a graph representing what depends on what
     const depGraph: graphlib.Graph = this.createGraphOfDependencies(
