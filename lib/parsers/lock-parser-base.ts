@@ -41,11 +41,15 @@ export interface PackageLockDep {
   dev?: boolean;
 }
 
+/**
+ * A flattened representation of package lock
+ */
 export interface DepMap {
   [path: string]: DepMapItem;
 }
 
 export interface DepMapItem extends DepTreeDep {
+  // "depName", TODO: example
   requires: string[];
 }
 
@@ -65,6 +69,9 @@ export abstract class LockParserBase implements LockfileParser {
 
   public abstract parseLockFile(lockFileContents: string): Lockfile;
 
+  /**
+   * @note shared impl by all subclasses
+   */
   public async getDependencyTree(
     manifestFile: ManifestFile,
     lockfile: Lockfile,
@@ -101,8 +108,8 @@ export abstract class LockParserBase implements LockfileParser {
     }
 
     // prepare a flat map, where dependency path is a key to dependency object
-    // path is an unique identifier for each dependency and corresponds to the
-    // relative path on disc
+    // path is an unique identifier for each dependency (XXX: the installation?) and corresponds to the
+    // relative path on disk
     const depMap: DepMap = this.getDepMap(lockfile, manifestFile.resolutions);
 
     // all paths are identified, we can create a graph representing what depends on what
@@ -328,12 +335,18 @@ export abstract class LockParserBase implements LockfileParser {
     return newNode;
   }
 
+  /**
+   *
+   * @param depMap
+   * @param strictOutOfSync
+   * @returns a directed map, where every node is path to a dependency, and every edge dependee -> depender
+   */
   private createGraphOfDependencies(
     depMap: DepMap,
     strictOutOfSync = true,
   ): graphlib.Graph {
     const depGraph = new graphlib.Graph();
-    for (const depKey of Object.keys(depMap)) {
+    for (const /* path */ depKey of Object.keys(depMap)) {
       depGraph.setNode(depKey);
     }
     for (const [depPath, dep] of Object.entries(depMap)) {

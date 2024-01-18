@@ -45,7 +45,7 @@ export interface ManifestFile {
 export interface DepTreeDep {
   name?: string; // shouldn't, but might happen
   version?: string; // shouldn't, but might happen
-  dependencies?: {
+  /* (direct) */ dependencies?: {
     // XXX: could this contain cyclic loop?
     [depName: string]: DepTreeDep;
   };
